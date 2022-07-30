@@ -30,6 +30,5 @@ public class Teacher {
     private List<Course> courses;
 
     private boolean isActive;
-
     private LocalDate joinDate;
 }
