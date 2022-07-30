@@ -37,6 +37,11 @@
             <div class="p-5 mb-4 bg-light rounded-3">
                 <div class="container-fluid py-5">
                     <h1 class="display-5 fw-bold">School list</h1>
+                    <a class="btn btn-warning" href="/school/create" role="button">Add school</a>
+                    <p></p>
+                    <div class="alert alert-success" role="alert" th:if="${messageType} == 'success'">
+                        <span th:text="${message}"></span>
+                    </div>
                     <div class="alert alert-info" role="alert" th:if="${schools.size() == 0}">
                         <span>No schools found!</span>
                     </div>
