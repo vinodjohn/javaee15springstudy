@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.UUID;
+
 /**
  * Controller to handle school related request
  *
@@ -28,7 +30,7 @@ public class SchoolController {
     }
 
     @GetMapping("/{id}")
-    public String showSchoolViewPage(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String showSchoolViewPage(@PathVariable UUID id, Model model, RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute("school", schoolService.findSchoolById(id));
             return "school/view-school";
@@ -62,7 +64,7 @@ public class SchoolController {
     }
 
     @GetMapping("/update/{id}")
-    public String showUpdateSchoolPage(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes,
+    public String showUpdateSchoolPage(@PathVariable UUID id, Model model, RedirectAttributes redirectAttributes,
                                        @RequestParam(value = "school", required = false) School school) {
         if (school == null) {
             try {
@@ -80,7 +82,7 @@ public class SchoolController {
         try {
             schoolService.updateSchool(school);
             redirectAttributes.addFlashAttribute("message",
-                    String.format("School(id=%d) updated successfully!", school.getId()));
+                    String.format("School(id=%s) updated successfully!", school.getId()));
             redirectAttributes.addFlashAttribute("messageType", "success");
             return "redirect:/school";
         } catch (SchoolNotFoundException e) {
@@ -89,11 +91,11 @@ public class SchoolController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteSchool(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String deleteSchool(@PathVariable UUID id, RedirectAttributes redirectAttributes) {
         try {
             schoolService.deleteSchoolById(id);
             redirectAttributes.addFlashAttribute("message",
-                    String.format("School(id=%d) deleted successfully!", id));
+                    String.format("School(id=%s) deleted successfully!", id));
             redirectAttributes.addFlashAttribute("messageType", "success");
             return "redirect:/school";
 
@@ -103,11 +105,11 @@ public class SchoolController {
     }
 
     @GetMapping("/restore/{id}")
-    public String restoreSchool(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String restoreSchool(@PathVariable UUID id, RedirectAttributes redirectAttributes) {
         try {
             schoolService.restoreSchoolById(id);
             redirectAttributes.addFlashAttribute("message",
-                    String.format("School(id=%d) restored successfully!", id));
+                    String.format("School(id=%s) restored successfully!", id));
             redirectAttributes.addFlashAttribute("messageType", "success");
             return "redirect:/school";
 
@@ -117,9 +119,9 @@ public class SchoolController {
     }
 
     // PRIVATE METHODS //
-    private String handleSchoolNotFoundExceptionById(Long id, RedirectAttributes redirectAttributes) {
+    private String handleSchoolNotFoundExceptionById(UUID id, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("message",
-                String.format("School(id=%d) not found!", id));
+                String.format("School(id=%s) not found!", id));
         redirectAttributes.addFlashAttribute("messageType", "error");
         return "redirect:/school";
     }

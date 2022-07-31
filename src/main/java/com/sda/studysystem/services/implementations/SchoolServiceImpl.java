@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Implementation of SchoolService
@@ -29,10 +30,10 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    public School findSchoolById(Long id) throws SchoolNotFoundException {
+    public School findSchoolById(UUID id) throws SchoolNotFoundException {
         Optional<School> optionalSchool = schoolRepository.findById(id);
 
-        if(optionalSchool.isEmpty()) {
+        if (optionalSchool.isEmpty()) {
             throw new SchoolNotFoundException(id);
         }
 
@@ -43,7 +44,7 @@ public class SchoolServiceImpl implements SchoolService {
     public School findSchoolByName(String name) throws SchoolNotFoundException {
         Optional<School> optionalSchool = schoolRepository.findByName(name);
 
-        if(optionalSchool.isEmpty()) {
+        if (optionalSchool.isEmpty()) {
             throw new SchoolNotFoundException(name);
         }
 
@@ -57,20 +58,20 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public void updateSchool(School school) throws SchoolNotFoundException {
-        if(findSchoolById(school.getId()) != null) {
+        if (findSchoolById(school.getId()) != null) {
             schoolRepository.saveAndFlush(school);
         }
     }
 
     @Override
-    public void deleteSchoolById(Long id) throws SchoolNotFoundException {
+    public void deleteSchoolById(UUID id) throws SchoolNotFoundException {
         School school = findSchoolById(id);
         school.setActive(false);
         schoolRepository.saveAndFlush(school);
     }
 
     @Override
-    public void restoreSchoolById(Long id) throws SchoolNotFoundException {
+    public void restoreSchoolById(UUID id) throws SchoolNotFoundException {
         School school = findSchoolById(id);
         school.setActive(true);
         schoolRepository.saveAndFlush(school);
