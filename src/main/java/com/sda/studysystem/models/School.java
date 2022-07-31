@@ -1,20 +1,25 @@
 package com.sda.studysystem.models;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * School model
  *
  * @author Vinod John
  */
-@Entity
 @Data
-public class School {
+@Entity
+@EqualsAndHashCode(callSuper = true)
+public class School extends Auditable<String> implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
