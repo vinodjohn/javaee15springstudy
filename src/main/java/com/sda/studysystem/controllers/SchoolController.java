@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class SchoolController {
     @Autowired
     private SchoolService schoolService;
+
     @GetMapping
     public String showSchoolListPage(Model model, @ModelAttribute("message") String message,
                                      @ModelAttribute("messageType") String messageType) {
@@ -26,10 +27,20 @@ public class SchoolController {
         return "school/list-school";
     }
 
+    @GetMapping("/{id}")
+    public String showSchoolViewPage(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            model.addAttribute("school", schoolService.findSchoolById(id));
+            return "school/view-school";
+        } catch (SchoolNotFoundException e) {
+            return handleSchoolNotFoundExceptionById(id, redirectAttributes);
+        }
+    }
+
     @GetMapping("/create")
     public String showCreateSchoolPage(@ModelAttribute("school") School school,
                                        @ModelAttribute("message") String message,
-                                       @ModelAttribute("messageType") String messageType){
+                                       @ModelAttribute("messageType") String messageType) {
         return "school/create-school";
     }
 
@@ -52,15 +63,12 @@ public class SchoolController {
 
     @GetMapping("/update/{id}")
     public String showUpdateSchoolPage(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes,
-                                       @RequestParam(value= "school", required = false) School school) {
+                                       @RequestParam(value = "school", required = false) School school) {
         if (school == null) {
             try {
                 model.addAttribute("school", schoolService.findSchoolById(id));
             } catch (SchoolNotFoundException e) {
-                redirectAttributes.addFlashAttribute("message",
-                        String.format("School(id=%d) not found!", id));
-                redirectAttributes.addFlashAttribute("messageType", "error");
-                return "redirect:/school";
+                return handleSchoolNotFoundExceptionById(id, redirectAttributes);
             }
         }
 
@@ -76,10 +84,43 @@ public class SchoolController {
             redirectAttributes.addFlashAttribute("messageType", "success");
             return "redirect:/school";
         } catch (SchoolNotFoundException e) {
-            redirectAttributes.addFlashAttribute("message",
-                    String.format("School(id=%d) not found!", school.getId()));
-            redirectAttributes.addFlashAttribute("messageType", "error");
-            return "redirect:/school";
+            return handleSchoolNotFoundExceptionById(school.getId(), redirectAttributes);
         }
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteSchool(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            schoolService.deleteSchoolById(id);
+            redirectAttributes.addFlashAttribute("message",
+                    String.format("School(id=%d) deleted successfully!", id));
+            redirectAttributes.addFlashAttribute("messageType", "success");
+            return "redirect:/school";
+
+        } catch (SchoolNotFoundException e) {
+            return handleSchoolNotFoundExceptionById(id, redirectAttributes);
+        }
+    }
+
+    @GetMapping("/restore/{id}")
+    public String restoreSchool(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            schoolService.restoreSchoolById(id);
+            redirectAttributes.addFlashAttribute("message",
+                    String.format("School(id=%d) restored successfully!", id));
+            redirectAttributes.addFlashAttribute("messageType", "success");
+            return "redirect:/school";
+
+        } catch (SchoolNotFoundException e) {
+            return handleSchoolNotFoundExceptionById(id, redirectAttributes);
+        }
+    }
+
+    // PRIVATE METHODS //
+    private String handleSchoolNotFoundExceptionById(Long id, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message",
+                String.format("School(id=%d) not found!", id));
+        redirectAttributes.addFlashAttribute("messageType", "error");
+        return "redirect:/school";
     }
 }
