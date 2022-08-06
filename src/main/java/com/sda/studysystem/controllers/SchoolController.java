@@ -1,6 +1,5 @@
 package com.sda.studysystem.controllers;
 
-import com.sda.studysystem.exceptions.SchoolAlreadyExistsException;
 import com.sda.studysystem.exceptions.SchoolNotFoundException;
 import com.sda.studysystem.models.School;
 import com.sda.studysystem.services.SchoolService;
@@ -11,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -42,13 +42,13 @@ public class SchoolController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createSchool(@RequestBody School school) throws SchoolAlreadyExistsException {
+    public ResponseEntity<?> createSchool(@Valid @RequestBody School school) {
         schoolService.createSchool(school);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> updateSchool(@RequestBody School school) throws SchoolNotFoundException {
+    public ResponseEntity<?> updateSchool(@Valid @RequestBody School school) throws SchoolNotFoundException {
         schoolService.updateSchool(school);
         return new ResponseEntity<>(HttpStatus.OK);
     }

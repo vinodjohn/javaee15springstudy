@@ -1,11 +1,15 @@
 package com.sda.studysystem.handlers.exception;
 
-import com.sda.studysystem.exceptions.SchoolAlreadyExistsException;
 import com.sda.studysystem.exceptions.SchoolNotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
@@ -34,11 +38,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(SchoolAlreadyExistsException.class)
-    public final ResponseEntity<Object> handleSchoolAlreadyExistsException(Exception ex) {
+    @Override
+    @NonNull
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders httpHeaders,
+                                                                  HttpStatus httpStatus, WebRequest webRequest){
         List<String> details = new ArrayList<>();
-        details.add(ex.getLocalizedMessage());
-        ErrorResponse errorResponse = new ErrorResponse("School already exists!", details);
+
+        for(ObjectError error: ex.getBindingResult().getAllErrors()) {
+            details.add(error.getDefaultMessage());
+        }
+
+        ErrorResponse errorResponse = new ErrorResponse("Validation failed!", details);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
