@@ -1,6 +1,5 @@
 package com.sda.studysystem.components;
 
-import com.sda.studysystem.exceptions.SchoolNotFoundException;
 import com.sda.studysystem.models.School;
 import com.sda.studysystem.services.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class DataInit {
     private SchoolService schoolService;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         initSchool();
     }
 
@@ -32,10 +31,9 @@ public class DataInit {
         school.setPhone("56398563");
 
         try {
-            School searchSchool = schoolService.findSchoolByName(school.getName());
-            System.out.println("Cannot pre-initialize school:" + searchSchool.getName());
-        } catch (SchoolNotFoundException e) {
             schoolService.createSchool(school);
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
         }
     }
 }
