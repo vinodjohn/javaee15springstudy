@@ -1,5 +1,6 @@
 package com.sda.studysystem.components;
 
+import com.sda.studysystem.exceptions.SchoolNotFoundException;
 import com.sda.studysystem.models.School;
 import com.sda.studysystem.services.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,10 @@ public class DataInit {
         school.setPhone("56398563");
 
         try {
+            School resultSchool = schoolService.findSchoolByName(school.getName());
+            System.out.printf("School(name=%s) already exists. Cannot create duplicate school!%n", resultSchool.getName());
+        } catch (SchoolNotFoundException e) {
             schoolService.createSchool(school);
-        } catch (Exception e) {
-            System.out.println(e.getLocalizedMessage());
         }
     }
 }
