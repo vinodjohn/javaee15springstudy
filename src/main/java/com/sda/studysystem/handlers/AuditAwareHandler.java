@@ -1,11 +1,12 @@
 package com.sda.studysystem.handlers;
 
-import com.sda.studysystem.utils.Constants;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
+
+import static com.sda.studysystem.utils.Constants.Audit.DEFAULT_AUDITOR;
 
 /**
  * Custom handler to implement AuditorAware
@@ -15,15 +16,12 @@ import java.util.Optional;
 public class AuditAwareHandler implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
-        String username;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
+        if (authentication != null) {
+            return Optional.of(authentication.getName());
         } else {
-            username = principal.toString();
+            return Optional.of(DEFAULT_AUDITOR);
         }
-
-        return username.isEmpty() ? Optional.of(Constants.Audit.DEFAULT_AUDITOR) : Optional.of(username);
     }
 }
