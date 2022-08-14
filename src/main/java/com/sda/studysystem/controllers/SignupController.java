@@ -1,7 +1,6 @@
 package com.sda.studysystem.controllers;
 
 import com.sda.studysystem.exceptions.UserNotFoundException;
-import com.sda.studysystem.models.Login;
 import com.sda.studysystem.models.User;
 import com.sda.studysystem.services.AuthorityService;
 import com.sda.studysystem.services.UserService;
