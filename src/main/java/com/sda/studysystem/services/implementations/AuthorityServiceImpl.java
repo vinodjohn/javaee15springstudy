@@ -24,6 +24,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 
     @Override
     public void createAuthority(Authority authority) {
+        authority.setActive(true);
         authorityRepository.save(authority);
     }
 
